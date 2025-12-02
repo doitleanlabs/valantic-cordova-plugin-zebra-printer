@@ -1,0 +1,32 @@
+{
+  "name": "valantic-cordova-plugin-zebra-printer",
+  "version": "1.0.0",
+  "description": "Cordova plugin for Zebra Link-OS printers (WiFi/Bluetooth) used by Valantic apps",
+  "cordova": {
+    "id": "valantic-cordova-plugin-zebra-printer",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valantic/valantic-cordova-plugin-zebra-printer.git"
+  },
+  "keywords": [
+    "cordova",
+    "zebra",
+    "printer",
+    "link-os",
+    "valantic",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "Valantic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/valantic/valantic-cordova-plugin-zebra-printer/issues"
+  },
+  "homepage": "https://github.com/valantic/valantic-cordova-plugin-zebra-printer#readme"
+}

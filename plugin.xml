@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin
+    xmlns="http://apache.org/cordova/ns/plugins"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="valantic-cordova-plugin-zebra-printer"
+    version="1.0.0">
+
+    <name>valantic-cordova-plugin-zebra-printer</name>
+    <description>Cordova plugin for Zebra Link-OS printers (WiFi/Bluetooth)</description>
+    <license>MIT</license>
+    <keywords>cordova, zebra, printer, link-os, valantic</keywords>
+
+    <!-- JS bridge -->
+    <js-module src="www/ZebraPrinter.js" name="ZebraPrinter">
+        <clobbers target="ZebraPrinter"/>
+    </js-module>
+
+    <!-- ANDROID -->
+    <platform name="android">
+
+        <!-- Register plugin in config.xml -->
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="ZebraPrinter">
+                <param name="android-package" value="com.valantic.zebraprinter.ZebraPrinter"/>
+            </feature>
+        </config-file>
+
+        <!-- Zebra SDK jar/aar – adjust path/name to what you actually use -->
+        <!-- Example if you put a jar in src/android/libs/ZSDK_API.jar -->
+        <framework src="src/android/libs/ZSDK_API.jar" custom="true"/>
+
+        <!-- Our plugin implementation -->
+        <source-file
+            src="src/android/ZebraPrinter.java"
+            target-dir="src/com/valantic/zebraprinter"/>
+
+        <!-- AndroidX (OutSystems MABS already uses AndroidX, this just guarantees it) -->
+        <preference name="AndroidXEnabled" value="true"/>
+    </platform>
+
+    <!-- iOS -->
+    <platform name="ios">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="ZebraPrinter">
+                <param name="ios-package" value="ZebraPrinter"/>
+            </feature>
+        </config-file>
+
+        <!-- Zebra Link-OS frameworks – you will embed them in src/ios and reference here -->
+        <!-- Adjust names/paths to the real SDK you download from Zebra -->
+        <framework src="src/ios/LinkOS.framework" custom="true" embed="true"/>
+        <framework src="src/ios/MfiBtPrinterSDK.framework" custom="true" embed="true"/>
+
+        <source-file src="src/ios/ZebraPrinter.h"/>
+        <source-file src="src/ios/ZebraPrinter.m"/>
+    </platform>
+
+</plugin>
