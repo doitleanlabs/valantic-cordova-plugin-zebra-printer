@@ -27,8 +27,8 @@
             </feature>
         </config-file>
 
-        <!-- Zebra SDK jar - copied via hook to avoid ENOTDIR errors from Cordova treating it as a Gradle module -->
-        <hook src="scripts/before-platform-add.js" type="before_platform_add" />
+        <!-- Zebra SDK jar - copied via hook before build to avoid ENOTDIR errors -->
+        <hook src="scripts/before-platform-add.js" type="before_prepare" />
 
         <!-- Our plugin implementation -->
         <source-file
