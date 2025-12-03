@@ -27,8 +27,8 @@
             </feature>
         </config-file>
 
-        <!-- Zebra SDK jar - add to libs and include in Gradle classpath -->
-        <framework src="src/android/libs/ZSDK_ANDROID_API.jar" custom="true" />
+        <!-- Zebra SDK jar - copied via hook to avoid ENOTDIR errors from Cordova treating it as a Gradle module -->
+        <hook src="scripts/before-platform-add.js" type="before_platform_add" />
 
         <!-- Our plugin implementation -->
         <source-file
