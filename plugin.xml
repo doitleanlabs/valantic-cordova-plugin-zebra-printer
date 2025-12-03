@@ -29,7 +29,7 @@
 
         <!-- Zebra SDK jar/aar – adjust path/name to what you actually use -->
         <!-- Example if you put a jar in src/android/libs/ZSDK_API.jar -->
-        <framework src="src/android/libs/ZSDK_API.jar" custom="true"/>
+        <framework src="src/android/libs/ZSDK_ANDROID_API.jar" custom="true"/>
 
         <!-- Our plugin implementation -->
         <source-file
