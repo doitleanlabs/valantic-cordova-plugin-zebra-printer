@@ -30,6 +30,8 @@
         <!-- Zebra SDK jar/aar – place the JAR into the Android app libs folder so Gradle includes it -->
         <!-- Use resource-file to copy the JAR into platforms/android/app/libs on modern cordova-android -->
         <resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="app/libs/ZSDK_ANDROID_API.jar" />
+        <!-- Also add as a framework so cordova adds it to Gradle dependencies -->
+        <framework src="src/android/libs/ZSDK_ANDROID_API.jar" custom="true" />
 
         <!-- Our plugin implementation -->
         <source-file

@@ -9,14 +9,14 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import com.zebra.sdk.comm.TcpConnection;
-import com.zebra.sdk.comm.ConnectionException;
-import com.zebra.sdk.printer.discovery.DiscoveredPrinter;
-import com.zebra.sdk.printer.discovery.NetworkDiscoverer;
-import com.zebra.sdk.printer.discovery.DiscoveryException;
-import com.zebra.sdk.printer.ZebraPrinter;
-import com.zebra.sdk.printer.ZebraPrinterFactory;
-import com.zebra.sdk.printer.PrinterStatus;
+import com.zebra.android.comm.TcpPrinterConnection;
+import com.zebra.android.comm.ZebraPrinterConnectionException;
+import com.zebra.android.discovery.DiscoveredPrinter;
+import com.zebra.android.discovery.NetworkDiscoverer;
+import com.zebra.android.discovery.DiscoveryException;
+import com.zebra.android.printer.ZebraPrinter;
+import com.zebra.android.printer.ZebraPrinterFactory;
+import com.zebra.android.printer.PrinterStatus;
 
 public class ZebraPrinter extends CordovaPlugin {
 
@@ -59,6 +59,7 @@ public class ZebraPrinter extends CordovaPlugin {
                 callbackContext.error("Discovery failed: " + e.getMessage());
             }
         });
+
     }
 
     // ------------- PRINT -------------
@@ -68,9 +69,9 @@ public class ZebraPrinter extends CordovaPlugin {
         final String zpl = args.getString(1);
 
         cordova.getThreadPool().execute(() -> {
-            TcpConnection conn = null;
+                    TcpPrinterConnection conn = null;
             try {
-                conn = new TcpConnection(ip, 9100);
+                        conn = new TcpPrinterConnection(ip, 9100);
                 conn.open();
                 conn.write(zpl.getBytes("UTF-8"));
                 conn.close();
@@ -81,7 +82,7 @@ public class ZebraPrinter extends CordovaPlugin {
                     if (conn != null && conn.isConnected()) {
                         conn.close();
                     }
-                } catch (ConnectionException ignored) { }
+                } catch (ZebraPrinterConnectionException ignored) { }
 
                 callbackContext.error("Print failed: " + e.getMessage());
             }
@@ -94,9 +95,9 @@ public class ZebraPrinter extends CordovaPlugin {
         final String ip = args.getString(0);
 
         cordova.getThreadPool().execute(() -> {
-            TcpConnection conn = null;
+                    TcpPrinterConnection conn = null;
             try {
-                conn = new TcpConnection(ip, 9100);
+                        conn = new TcpPrinterConnection(ip, 9100);
                 conn.open();
 
                 ZebraPrinter printer = ZebraPrinterFactory.getInstance(conn);
@@ -117,7 +118,7 @@ public class ZebraPrinter extends CordovaPlugin {
                     if (conn != null && conn.isConnected()) {
                         conn.close();
                     }
-                } catch (ConnectionException ignored) { }
+                } catch (ZebraPrinterConnectionException ignored) { }
 
                 callbackContext.error("Status failed: " + e.getMessage());
             }
