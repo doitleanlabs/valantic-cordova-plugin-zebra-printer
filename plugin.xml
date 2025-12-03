@@ -36,8 +36,7 @@
             src="src/android/ZebraPrinter.java"
             target-dir="src/com/valantic/zebraprinter"/>
 
-        <!-- AndroidX (OutSystems MABS already uses AndroidX, this just guarantees it) -->
-        <preference name="AndroidXEnabled" value="true"/>
+        <dependency id="cordova-androidx-build" url="https://github.com/cmfsotelo/cordova-androidx-build.git#1.0-OS.1" />
     </platform>
 
     <!-- iOS -->
