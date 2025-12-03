@@ -35,8 +35,8 @@
         <source-file
             src="src/android/ZebraPrinter.java"
             target-dir="src/com/valantic/zebraprinter"/>
-
-        <dependency id="cordova-androidx-build" url="https://github.com/cmfsotelo/cordova-androidx-build.git#1.0-OS.1" />
+        <!-- Copy JAR to legacy `libs/` as well for older cordova-android consumers -->
+        <resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="libs/ZSDK_ANDROID_API.jar" />
     </platform>
 
     <!-- iOS -->
@@ -48,13 +48,35 @@
             </feature>
         </config-file>
 
-        <!-- Zebra Link-OS frameworks – you will embed them in src/ios and reference here -->
-        <!-- Adjust names/paths to the real SDK you download from Zebra -->
-        <framework src="src/ios/LinkOS.framework" custom="true" embed="true"/>
-        <framework src="src/ios/MfiBtPrinterSDK.framework" custom="true" embed="true"/>
+        <!-- iOS SDK: prefer the provided XCFramework; fall back to static .a plus headers in FATLib -->
+        <framework src="src/ios/xcframework/ZSDK_API.xcframework" custom="true" embed="true" />
+        <framework src="src/ios/FATLib/libZSDK_API.a" custom="true" />
 
-        <source-file src="src/ios/ZebraPrinter.h"/>
-        <source-file src="src/ios/ZebraPrinter.m"/>
+        <!-- Copy individual SDK headers so the static .a fallback can be used by consumers -->
+        <header-file src="src/ios/FATLib/include/DiscoveredPrinter.h" />
+        <header-file src="src/ios/FATLib/include/DiscoveredPrinterNetwork.h" />
+        <header-file src="src/ios/FATLib/include/FieldDescriptionData.h" />
+        <header-file src="src/ios/FATLib/include/FileUtil.h" />
+        <header-file src="src/ios/FATLib/include/FormatUtil.h" />
+        <header-file src="src/ios/FATLib/include/GraphicsUtil.h" />
+        <header-file src="src/ios/FATLib/include/MagCardReader.h" />
+        <header-file src="src/ios/FATLib/include/MfiBtPrinterConnection.h" />
+        <header-file src="src/ios/FATLib/include/NetworkDiscoverer.h" />
+        <header-file src="src/ios/FATLib/include/PrinterStatus.h" />
+        <header-file src="src/ios/FATLib/include/PrinterStatusMessages.h" />
+        <header-file src="src/ios/FATLib/include/ResponseValidator.h" />
+        <header-file src="src/ios/FATLib/include/SGD.h" />
+        <header-file src="src/ios/FATLib/include/SmartCardReader.h" />
+        <header-file src="src/ios/FATLib/include/TcpPrinterConnection.h" />
+        <header-file src="src/ios/FATLib/include/ToolsUtil.h" />
+        <header-file src="src/ios/FATLib/include/ZebraErrorCode.h" />
+        <header-file src="src/ios/FATLib/include/ZebraPrinter.h" />
+        <header-file src="src/ios/FATLib/include/ZebraPrinterConnection.h" />
+        <header-file src="src/ios/FATLib/include/ZebraPrinterFactory.h" />
+        <header-file src="src/ios/FATLib/include/ZplPrintMode.h" />
+
+        <source-file src="src/ios/ZebraPrinter.h" />
+        <source-file src="src/ios/ZebraPrinter.m" />
     </platform>
 
 </plugin>
