@@ -30,11 +30,18 @@
         <!-- Zebra SDK jar/aar – place the JAR into the Android app libs folder so Gradle includes it -->
         <!-- Use resource-file to copy the JAR into platforms/android/app/libs on modern cordova-android -->
         <resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="app/libs/ZSDK_ANDROID_API.jar" />
+        <!-- Also add as a framework so cordova adds it to Gradle dependencies -->
+        <framework src="src/android/libs/ZSDK_ANDROID_API.jar" custom="true" />
+        
         <!-- A prepare hook will ensure the JAR is copied and referenced in Gradle to avoid ENOTDIR issues -->
         <hook src="scripts/copy-android-jar.js" type="before_prepare" />
 
         <!-- Our plugin implementation -->
-        <source-file src="src/android/ZebraPrinter.java" target-dir="src/com/valantic/zebraprinter"/>
+        <source-file
+            src="src/android/ZebraPrinter.java"
+            target-dir="src/com/valantic/zebraprinter"/>
+        <!-- Copy JAR to legacy `libs/` as well for older cordova-android consumers -->
+        <resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="libs/ZSDK_ANDROID_API.jar" />
     </platform>
 
     <!-- iOS -->
