@@ -5,10 +5,12 @@
     id="valantic-cordova-plugin-zebra-printer"
     version="1.0.0">
 
-    <name>valantic-cordova-plugin-zebra-printer</name>
-    <description>Cordova plugin for Zebra Link-OS printers (WiFi/Bluetooth)</description>
-    <license>MIT</license>
-    <keywords>cordova, zebra, printer, link-os, valantic</keywords>
+        <name>valantic-cordova-plugin-zebra-printer</name>
+        <description>Cordova plugin for Zebra Link-OS printers (WiFi/Bluetooth)</description>
+        <license>MIT</license>
+        <keywords>cordova, zebra, printer, link-os, valantic</keywords>
+
+        <!-- No global plugin variable required; Android-only preference lives inside the android platform block. -->
 
     <!-- JS bridge -->
     <js-module src="www/ZebraPrinter.js" name="ZebraPrinter">
