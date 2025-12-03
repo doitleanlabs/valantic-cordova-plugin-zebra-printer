@@ -72,12 +72,12 @@
         <header-file src="src/ios/FATLib/include/TcpPrinterConnection.h" />
         <header-file src="src/ios/FATLib/include/ToolsUtil.h" />
         <header-file src="src/ios/FATLib/include/ZebraErrorCode.h" />
-        <header-file src="src/ios/FATLib/include/ZebraPrinter.h" />
+        <header-file src="src/ios/FATLib/include/ZebraPrinter.h" target="include/FATLib/ZebraPrinter.h" />
         <header-file src="src/ios/FATLib/include/ZebraPrinterConnection.h" />
         <header-file src="src/ios/FATLib/include/ZebraPrinterFactory.h" />
         <header-file src="src/ios/FATLib/include/ZplPrintMode.h" />
 
-        <source-file src="src/ios/ZebraPrinter.h" />
+        <header-file src="src/ios/ZebraPrinter.h" />
         <source-file src="src/ios/ZebraPrinter.m" />
     </platform>
 
