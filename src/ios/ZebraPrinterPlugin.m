@@ -1,8 +1,8 @@
-#import "ZebraPrinter.h"
+#import "ZebraPrinterPlugin.h"
 
 #import <LinkOS/LinkOS.h>  // Adjust import according to actual SDK
 
-@implementation ZebraPrinter
+@implementation ZebraPrinterPlugin
 
 #pragma mark - Discovery
 
