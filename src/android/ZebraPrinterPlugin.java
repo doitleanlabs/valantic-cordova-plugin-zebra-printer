@@ -60,7 +60,7 @@ public class ZebraPrinterPlugin extends CordovaPlugin {
                 }*/
                 
                 callbackContext.success(result);
-            } catch (DiscoveryException e) {
+            } catch (Exception e) {
                 callbackContext.error("Discovery failed: " + e.getMessage());
             }
         });
