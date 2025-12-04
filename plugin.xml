@@ -28,13 +28,13 @@
         </config-file>
 
         <!-- Zebra SDK jar - inject directly into build.gradle dependencies -->
-        <config-file target="app/build.gradle" parent="/dependencies" mode="add">
+        <!--config-file target="app/build.gradle" parent="/dependencies" mode="add">
             implementation files('libs/ZSDK_ANDROID_API.jar')
-        </config-file>
+        </config-file-->
 
         <!-- Copy JAR to app/libs so it's available for Gradle -->
-        <resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="app/libs/ZSDK_ANDROID_API.jar" />
-
+        <!--resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="app/libs/ZSDK_ANDROID_API.jar" /-->
+        <lib-file src="src/android/libs/ZSDK_ANDROID_API.jar"/>
         <!-- Our plugin implementation -->
         <source-file
             src="src/android/ZebraPrinter.java"
