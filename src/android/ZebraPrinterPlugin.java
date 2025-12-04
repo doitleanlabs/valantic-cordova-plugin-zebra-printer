@@ -52,12 +52,33 @@ public class ZebraPrinterPlugin extends CordovaPlugin {
         JSONArray result = new JSONArray();
         cordova.getThreadPool().execute(() -> {
             try {
-                /*List<DiscoveredPrinter> printers = NetworkDiscoverer.localBroadcast();
+                final List<DiscoveredPrinter> printers = new ArrayList<>();
+
+                DiscoveryHandler handler = new DiscoveryHandler() {
+                    @Override
+                    public void foundPrinter(DiscoveredPrinter dp) {
+                        printers.add(dp);
+                    }
+
+                    @Override
+                    public void discoveryFinished() {
+                        // discovery finished - NetworkDiscoverer.localBroadcast usually returns when finished
+                    }
+
+                    @Override
+                    public void discoveryError(String msg) {
+                        // you may want to log or add an error marker
+                    }
+                };
+
+                // Start discovery. This method invokes the handler for each found printer.
+                // The SDK provides an overload with an int timeout if you need to limit duration.
+                NetworkDiscoverer.localBroadcast(handler);
 
                 for (DiscoveredPrinter p : printers) {
                     // Often p.address is the IP
                     result.put(p.address);
-                }*/
+                }
                 
                 callbackContext.success(result);
             } catch (Exception e) {
