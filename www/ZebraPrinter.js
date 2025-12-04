@@ -25,7 +25,33 @@ var ZebraPrinter = {
      * success: function(object status)
      */
     getStatus: function (ip, success, error) {
-        exec(success, error, "ZebraPrinter", "getStatus", [ip]);
+        exec(function(status) {
+            // Convert the native status object to a concise string
+            var str = 'UNKNOWN';
+            if (status && typeof status === 'object') {
+                if (status.isReadyToPrint) {
+                    str = 'READY';
+                } else if (status.isPaperOut) {
+                    str = 'PAPER_OUT';
+                } else if (status.isHeadOpen) {
+                    str = 'HEAD_OPEN';
+                } else if (status.isRibbonOut) {
+                    str = 'RIBBON_OUT';
+                } else if (status.isPaused) {
+                    str = 'PAUSED';
+                } else {
+                    // Fallback to a JSON string if no boolean matched
+                    try {
+                        str = JSON.stringify(status);
+                    } catch (e) {
+                        str = 'UNKNOWN';
+                    }
+                }
+            } else if (typeof status === 'string') {
+                str = status;
+            }
+            success(str);
+        }, error, "ZebraPrinter", "getStatus", [ip]);
     }
 
 };
