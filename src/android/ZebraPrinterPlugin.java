@@ -18,11 +18,11 @@ import com.zebra.sdk.printer.discovery.DiscoveredPrinter;
 import com.zebra.sdk.printer.discovery.NetworkDiscoverer;
 import com.zebra.sdk.printer.discovery.DiscoveryException;
 import com.zebra.sdk.printer.discovery.DiscoveryHandler;
-
+import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 import com.zebra.sdk.printer.PrinterStatus;
 
-public class ZebraPrinter extends CordovaPlugin {
+public class ZebraPrinterPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -48,16 +48,17 @@ public class ZebraPrinter extends CordovaPlugin {
     // ------------- DISCOVERY -------------
 
     private void discoverNetworkPrinters(final CallbackContext callbackContext) {
+
+        JSONArray result = new JSONArray();
         cordova.getThreadPool().execute(() -> {
             try {
-                /*JSONArray result = new JSONArray();
-                List<DiscoveredPrinter> printers = NetworkDiscoverer.localBroadcast();
+                /*List<DiscoveredPrinter> printers = NetworkDiscoverer.localBroadcast();
 
                 for (DiscoveredPrinter p : printers) {
                     // Often p.address is the IP
                     result.put(p.address);
                 }*/
-                result.put("p.address");
+                
                 callbackContext.success(result);
             } catch (DiscoveryException e) {
                 callbackContext.error("Discovery failed: " + e.getMessage());
