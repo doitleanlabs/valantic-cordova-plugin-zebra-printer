@@ -8,7 +8,7 @@ var ZebraPrinter = {
      * error:   function(string errorMessage)
      */
     discoverNetworkPrinters: function (success, error) {
-        exec(success, error, "ZebraPrinter", "discoverNetworkPrinters", []);
+        exec(success, error, "ZebraPrinterPlugin", "discoverNetworkPrinters", []);
     },
 
     /**
@@ -17,7 +17,7 @@ var ZebraPrinter = {
      * @param {string} zpl  - ZPL string
      */
     printZpl: function (ip, zpl, success, error) {
-        exec(success, error, "ZebraPrinter", "printZpl", [ip, zpl]);
+        exec(success, error, "ZebraPrinterPlugin", "printZpl", [ip, zpl]);
     },
 
     /**
@@ -51,7 +51,7 @@ var ZebraPrinter = {
                 str = status;
             }
             success(str);
-        }, error, "ZebraPrinter", "getStatus", [ip]);
+        }, error, "ZebraPrinterPlugin", "getStatus", [ip]);
     }
 
 };
