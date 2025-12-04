@@ -8,13 +8,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import com.zebra.sdk.comm.TcpConnection;
 import com.zebra.sdk.comm.ConnectionException;
 import com.zebra.sdk.printer.discovery.DiscoveredPrinter;
 import com.zebra.sdk.printer.discovery.NetworkDiscoverer;
 import com.zebra.sdk.printer.discovery.DiscoveryException;
-import com.zebra.sdk.printer.ZebraPrinter;
+import com.zebra.sdk.printer.discovery.DiscoveryHandler;
+
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 import com.zebra.sdk.printer.PrinterStatus;
 
@@ -46,14 +50,14 @@ public class ZebraPrinter extends CordovaPlugin {
     private void discoverNetworkPrinters(final CallbackContext callbackContext) {
         cordova.getThreadPool().execute(() -> {
             try {
-                JSONArray result = new JSONArray();
+                /*JSONArray result = new JSONArray();
                 List<DiscoveredPrinter> printers = NetworkDiscoverer.localBroadcast();
 
                 for (DiscoveredPrinter p : printers) {
                     // Often p.address is the IP
                     result.put(p.address);
-                }
-
+                }*/
+                result.put("p.address");
                 callbackContext.success(result);
             } catch (DiscoveryException e) {
                 callbackContext.error("Discovery failed: " + e.getMessage());
