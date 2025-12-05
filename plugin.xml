@@ -5,56 +5,51 @@
     id="valantic-cordova-plugin-zebra-printer"
     version="1.0.0">
 
-        <name>valantic-cordova-plugin-zebra-printer</name>
-        <description>Cordova plugin for Zebra Link-OS printers (WiFi/Bluetooth)</description>
-        <license>MIT</license>
-        <keywords>cordova, zebra, printer, link-os, valantic</keywords>
+    <name>valantic-cordova-plugin-zebra-printer</name>
+    <description>Cordova plugin for Zebra Link-OS printers (WiFi/Bluetooth)</description>
+    <license>MIT</license>
+    <keywords>cordova, zebra, printer, link-os, valantic</keywords>
 
-        <!-- No global plugin variable required; Android-only preference lives inside the android platform block. -->
-
-    <!-- JS bridge -->
     <js-module src="www/ZebraPrinter.js" name="ZebraPrinter">
         <clobbers target="ZebraPrinter"/>
     </js-module>
 
-    <!-- ANDROID -->
     <platform name="android">
 
-        <!-- Register plugin in config.xml -->
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="ZebraPrinterPlugin">
                 <param name="android-package" value="com.valantic.zebraprinter.ZebraPrinterPlugin"/>
             </feature>
         </config-file>
 
-        <!-- Zebra SDK jar - inject directly into build.gradle dependencies -->
-        <!--config-file target="app/build.gradle" parent="/dependencies" mode="add">
-            implementation files('libs/ZSDK_ANDROID_API.jar')
-        </config-file-->
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            
+            <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
-        <!-- Copy JAR to app/libs so it's available for Gradle -->
-        <!--resource-file src="src/android/libs/ZSDK_ANDROID_API.jar" target="app/libs/ZSDK_ANDROID_API.jar" /-->
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        </config-file>
+
         <lib-file src="src/android/libs/ZSDK_ANDROID_API.jar"/>
-        <!-- Our plugin implementation -->
+
         <source-file
             src="src/android/ZebraPrinterPlugin.java"
             target-dir="src/com/valantic/zebraprinter"/>
     </platform>
 
-    <!-- iOS -->
     <platform name="ios">
-
         <config-file target="config.xml" parent="/*">
             <feature name="ZebraPrinter">
                 <param name="ios-package" value="ZebraPrinter"/>
             </feature>
         </config-file>
 
-        <!-- iOS SDK: prefer the provided XCFramework; fall back to static .a plus headers in FATLib -->
         <framework src="src/ios/xcframework/ZSDK_API.xcframework" custom="true" embed="true" />
         <framework src="src/ios/FATLib/libZSDK_API.a" custom="true" />
 
-        <!-- Copy individual SDK headers so the static .a fallback can be used by consumers -->
         <header-file src="src/ios/FATLib/include/DiscoveredPrinter.h" />
         <header-file src="src/ios/FATLib/include/DiscoveredPrinterNetwork.h" />
         <header-file src="src/ios/FATLib/include/FieldDescriptionData.h" />

@@ -45,75 +45,90 @@ public class ZebraPrinterPlugin extends CordovaPlugin {
         }
     }
 
-    // ------------- DISCOVERY -------------
-
+    // ------------- DISCOVERY CORRIGIDO -------------
     private void discoverNetworkPrinters(final CallbackContext callbackContext) {
-
-        JSONArray result = new JSONArray();
         cordova.getThreadPool().execute(() -> {
             try {
-                final List<DiscoveredPrinter> printers = new ArrayList<>();
+                // Lista segura para threads
+                final List<DiscoveredPrinter> printers = java.util.Collections.synchronizedList(new ArrayList<>());
+                // Bloqueio para esperar a descoberta terminar
+                final CountDownLatch latch = new CountDownLatch(1);
 
                 DiscoveryHandler handler = new DiscoveryHandler() {
                     @Override
                     public void foundPrinter(DiscoveredPrinter dp) {
                         printers.add(dp);
+                        // System.out.println("Encontrou: " + dp.address);
                     }
 
                     @Override
                     public void discoveryFinished() {
-                        // discovery finished - NetworkDiscoverer.localBroadcast usually returns when finished
+                        latch.countDown(); // Libera o bloqueio
                     }
 
                     @Override
                     public void discoveryError(String msg) {
-                        // you may want to log or add an error marker
+                        latch.countDown(); // Libera o bloqueio mesmo com erro
                     }
                 };
 
-                // Start discovery. This method invokes the handler for each found printer.
-                // The SDK provides an overload with an int timeout if you need to limit duration.
+                // Inicia a descoberta
                 NetworkDiscoverer.localBroadcast(handler);
 
+                // ESPERA até 10 segundos ou até o discoveryFinished ser chamado
+                latch.await(10, TimeUnit.SECONDS);
+
+                JSONArray result = new JSONArray();
                 for (DiscoveredPrinter p : printers) {
-                    // Often p.address is the IP
                     result.put(p.address);
                 }
                 
                 callbackContext.success(result);
+
             } catch (Exception e) {
                 callbackContext.error("Discovery failed: " + e.getMessage());
             }
         });
-
     }
 
-    // ------------- PRINT -------------
-
+    // ------------- PRINT CORRIGIDO -------------
     private void printZpl(JSONArray args, final CallbackContext callbackContext) throws JSONException {
         final String ip = args.getString(0);
-        final String zpl = args.getString(1);
+        final String zplData = args.getString(1); // Renomeei para evitar confusão
 
         cordova.getThreadPool().execute(() -> {
             TcpConnection conn = null;
             try {
                 conn = new TcpConnection(ip, 9100);
                 conn.open();
-                conn.write(zpl.getBytes("UTF-8"));
-                conn.close();
 
-                callbackContext.success();
+                // Verificar se conectou
+                if (!conn.isConnected()) {
+                    throw new Exception("Could not connect to printer");
+                }
+
+                // Converter para bytes
+                byte[] data = zplData.getBytes("UTF-8");
+                conn.write(data);
+
+                // --- A CORREÇÃO MÁGICA ---
+                // Dar tempo para a impressora receber os dados antes de matar a conexão.
+                // Impressoras reais precisam disso, simuladores também.
+                Thread.sleep(500); 
+                // -------------------------
+
+                conn.close();
+                callbackContext.success("Print Sent");
+
             } catch (Exception e) {
                 try {
-                    if (conn != null && conn.isConnected()) {
-                        conn.close();
-                    }
+                    if (conn != null) conn.close();
                 } catch (ConnectionException ignored) { }
 
                 callbackContext.error("Print failed: " + e.getMessage());
             }
         });
-    }
+    }   
 
     // ------------- STATUS -------------
 
