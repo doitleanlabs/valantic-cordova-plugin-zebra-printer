@@ -45,51 +45,87 @@ public class ZebraPrinterPlugin extends CordovaPlugin {
         }
     }
 
+    private boolean isPrinterReachable(String ip, int port, int timeoutMs) {
+        java.net.Socket socket = new java.net.Socket();
+        try {
+            socket.connect(new java.net.InetSocketAddress(ip, port), timeoutMs);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        } finally {
+            try { socket.close(); } catch (Exception ignored) {}
+        }
+    }
+
     // ------------- DISCOVERY CORRIGIDO -------------
     private void discoverNetworkPrinters(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(() -> {
-            try {
-                // Lista segura para threads
-                final List<DiscoveredPrinter> printers = java.util.Collections.synchronizedList(new ArrayList<>());
-                // Bloqueio para esperar a descoberta terminar
-                final CountDownLatch latch = new CountDownLatch(1);
+    cordova.getThreadPool().execute(() -> {
+        final List<JSONObject> printers = java.util.Collections.synchronizedList(new ArrayList<>());
+        final CountDownLatch latch = new CountDownLatch(1);
 
-                DiscoveryHandler handler = new DiscoveryHandler() {
-                    @Override
-                    public void foundPrinter(DiscoveredPrinter dp) {
-                        printers.add(dp);
-                        // System.out.println("Encontrou: " + dp.address);
-                    }
-
-                    @Override
-                    public void discoveryFinished() {
-                        latch.countDown(); // Libera o bloqueio
-                    }
-
-                    @Override
-                    public void discoveryError(String msg) {
-                        latch.countDown(); // Libera o bloqueio mesmo com erro
-                    }
-                };
-
-                // Inicia a descoberta
-                NetworkDiscoverer.localBroadcast(handler);
-
-                // ESPERA até 10 segundos ou até o discoveryFinished ser chamado
-                latch.await(10, TimeUnit.SECONDS);
-
-                JSONArray result = new JSONArray();
-                for (DiscoveredPrinter p : printers) {
-                    result.put(p.address);
-                }
-                
-                callbackContext.success(result);
-
-            } catch (Exception e) {
-                callbackContext.error("Discovery failed: " + e.getMessage());
+        DiscoveryHandler handler = new DiscoveryHandler() {
+            @Override
+            public void foundPrinter(DiscoveredPrinter dp) {
+                try {
+                    JSONObject obj = new JSONObject();
+                    obj.put("address", dp.address);
+                    obj.put("name", dp.getDiscoveryDataMap().get("FRIENDLY_NAME"));
+                    printers.add(obj);
+                } catch (JSONException ignored) { }
             }
-        });
-    }
+
+            @Override
+            public void discoveryFinished() {
+                latch.countDown();
+            }
+
+            @Override
+            public void discoveryError(String error) {
+                latch.countDown();
+            }
+        };
+
+        try {
+            // SAFEST DISCOVERY FOR ZEBRA DEVICES
+            NetworkDiscoverer.findPrinters(handler);
+        } catch (Exception ex) {
+            // If SDK discovery fails → we still continue to fallback scan
+            latch.countDown();
+        }
+
+        try {
+            latch.await(7, TimeUnit.SECONDS); // max wait time
+        } catch (Exception ignored) { }
+
+        // FALLBACK → DIRECT TCP SCAN (guaranteed to never crash)
+        if (printers.isEmpty()) {
+            // Optional IP range — adjustable
+            String baseIp = "192.168.1.";
+
+            for (int i = 1; i <= 254; i++) {
+                String testIp = baseIp + i;
+
+                if (isPrinterReachable(testIp, 9100, 80)) {
+                    try {
+                        JSONObject obj = new JSONObject();
+                        obj.put("address", testIp);
+                        obj.put("name", "Zebra Printer (detected)");
+                        printers.add(obj);
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
+        // Return results
+        try {
+            JSONArray result = new JSONArray(printers);
+            callbackContext.success(result);
+        } catch (Exception e) {
+            callbackContext.error("Discovery failed: " + e.getMessage());
+        }
+    });
+}
+
 
     // ------------- PRINT CORRIGIDO -------------
     private void printZpl(JSONArray args, final CallbackContext callbackContext) throws JSONException {
