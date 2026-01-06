@@ -41,7 +41,7 @@
             target-dir="src/com/valantic/zebraprinter"/>
     </platform>
 
-    <platform name="ios">
+    <!--<platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="ZebraPrinter">
                 <param name="ios-package" value="ZebraPrinter"/>
@@ -75,6 +75,6 @@
 
         <header-file src="src/ios/ZebraPrinterPlugin.h" />
         <source-file src="src/ios/ZebraPrinterPlugin.m" />
-    </platform>
+    </platform> -->
 
 </plugin>
