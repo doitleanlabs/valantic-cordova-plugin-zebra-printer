@@ -43,8 +43,8 @@
 
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="ZebraPrinter">
-                <param name="ios-package" value="ZebraPrinter"/>
+            <feature name="ZebraPrinterPlugin">
+                <param name="ios-package" value="ZebraPrinterPlugin"/>
             </feature>
         </config-file>
 
