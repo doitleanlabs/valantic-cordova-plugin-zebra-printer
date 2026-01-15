@@ -10,7 +10,7 @@
 
 #pragma mark - Discovery
 
-/*
+
 - (void)discoverNetworkPrinters:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSError *error = nil;
@@ -40,7 +40,7 @@
             [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:ips];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
-} */
+} 
 
 #pragma mark - Print
 
