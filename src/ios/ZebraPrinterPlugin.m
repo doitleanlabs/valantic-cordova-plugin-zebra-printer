@@ -1,20 +1,44 @@
 #import "ZebraPrinterPlugin.h"
 
-#import <LinkOS/LinkOS.h>  // Adjust import according to actual SDK
+#import "TcpPrinterConnection.h"
+#import "ZebraPrinterFactory.h"
+#import "PrinterStatus.h"
+#import "NetworkDiscoverer.h"
+#import "DiscoveredPrinter.h"
 
 @implementation ZebraPrinterPlugin
 
 #pragma mark - Discovery
 
 - (void)discoverNetworkPrinters:(CDVInvokedUrlCommand *)command {
-    // NOTE: Link-OS iOS discovery often uses SGD or specific discovery classes.
-    // Here we just return an empty list placeholder for now, so plugin builds.
-    // You can later wire it to real discovery APIs.
-    
-    CDVPluginResult *result =
-        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                          messageAsArray:@[]];
-    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    [self.commandDelegate runInBackground:^{
+        NSError *error = nil;
+
+        // Try local broadcast first (fast)
+        NSArray *found = [NetworkDiscoverer localBroadcastWithTimeout:3000 error:&error];
+
+        // Fallback: multicast (often more reliable depending on network)
+        if ((found == nil || found.count == 0) && error == nil) {
+            found = [NetworkDiscoverer multicastWithHops:1 andWaitForResponsesTimeout:3000 error:&error];
+        }
+
+        if (error) {
+            CDVPluginResult *result =
+                [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                  messageAsString:error.localizedDescription];
+            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+            return;
+        }
+
+        NSMutableArray *ips = [NSMutableArray array];
+        for (DiscoveredPrinter *p in found) {
+            if (p.address) [ips addObject:p.address];
+        }
+
+        CDVPluginResult *result =
+            [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:ips];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    }];
 }
 
 #pragma mark - Print
