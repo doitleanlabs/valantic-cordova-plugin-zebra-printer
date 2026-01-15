@@ -48,6 +48,10 @@
             </feature>
         </config-file>
 
+        <edit-config target="NSLocalNetworkUsageDescription" file="*-Info.plist" mode="merge">
+          <string>This app discovers Zebra printers on your local network.</string>
+        </edit-config>
+
         <framework src="src/ios/xcframework/ZSDK_API.xcframework" custom="true" embed="true" />
         <framework src="src/ios/FATLib/libZSDK_API.a" custom="true" />
 
